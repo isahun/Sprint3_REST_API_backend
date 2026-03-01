@@ -1,10 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import {ConfigModule } from '@nestjs/config'; // Per gestionar variables d'entorn
+import { BooksModule } from './books/books.module'; // El crearem en el pas 3
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // Fent que les variables d'entorn estiguin disponibles globalment
+    }),
+    MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/book-api'),
+    BooksModule, // Importa el mòdul de llibres
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
