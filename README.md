@@ -1,50 +1,91 @@
-# Sprint3_REST_API_backend
+# 📚 Books API – NestJS + MongoDB Atlas (Sprint 3.06)
 
-# 📚 Book API – NestJS + MongoDB
+Welcome to the **Books API**, a robust backend service designed to manage a digital book catalog. This project was built using **NestJS** and **Mongoose**, focusing on clean architecture, cloud database integration, and strict data validation.
 
-A fully structured RESTful API built with **NestJS** and **MongoDB** to manage a book catalog.
 
-This project demonstrates:
-
-- Clean modular architecture
-- Dependency Injection
-- MongoDB integration with Mongoose
-- DTO validation using class-validator
-- Global validation pipes
-- Proper HTTP exception handling
-- Swagger (OpenAPI) documentation
-- Environment-based configuration
 
 ---
 
-# 🚀 Features
+## 🚀 Key Features
 
-- Create, read, update, and delete books (CRUD)
-- Data validation with DTOs
-- MongoDB schema validation
-- Unique ISBN handling with conflict detection
-- Structured error responses
-- Auto-generated API documentation
-- Scalable architecture following NestJS best practices
-
----
-
-# 🛠 Tech Stack
-
-- **NestJS**
-- **TypeScript**
-- **MongoDB**
-- **Mongoose**
-- **class-validator**
-- **class-transformer**
-- **@nestjs/swagger (OpenAPI)**
+- **Full CRUD Operations**: Create, Read, Update, and Delete books.
+- **Cloud Persistence**: Fully connected to **MongoDB Atlas**.
+- **Smart Validation**: Integrated `class-validator` to ensure data integrity (including real ISBN verification).
+- **Interactive Documentation**: Auto-generated **Swagger** UI for easy API testing.
+- **Conflict Handling**: Built-in detection for duplicate ISBNs (409 Conflict).
+- **Environment Safety**: Sensitive data protected via `.env` configuration.
 
 ---
 
-# 📦 Installation
+## 🛠 Tech Stack
 
-## 1️⃣ Clone the repository
+- **Framework**: [NestJS](https://nestjs.com/) (Node.js)
+- **Language**: TypeScript
+- **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+- **ORM**: [Mongoose](https://mongoosejs.com/)
+- **API Docs**: Swagger / OpenAPI
+- **Validation**: class-validator & class-transformer
 
-```bash
+---
+
+## 📦 Installation & Getting Started
+
+Follow these steps to get the project running on your local machine (Windows, macOS, or Linux).
+
+### 1. Clone the repository
+Open your terminal and run:
+
 git clone <your-repository-url>
+
+### 2. Enter the project folder
+**Note on Ambiguity:** Depending on how you cloned the repo (e.g., via VS Code interface), you might already be inside the correct folder.
+**Check**: If you see the src folder and package.json in your sidebar, skip this step. Otherwise, run: 
+
 cd book-api
+
+### 3. Install dependenciesThis will download all necessary libraries (NestJS, Mongoose, etc.): npm install
+
+### 4. Set up Environment Variables
+The .env file is excluded from Git for security. You must create a new one in the root folder:
+#### - Create a file named .env.
+#### - Add your MongoDB Atlas connection string: 
+
+MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/book-api
+PORT=3000
+
+### 5. Launch the Server
+#Watch mode (recommended for development)
+npm run start:dev
+
+### API Documentation (Swagger) 
+Once the server is running, explore and test the API directly from your browser: 
+http://localhost:3000/api-docs🛣️ 
+
+### Available Endpoints
+#### Method  Endpoint    Description
+GET     /books      Get all books in the database.
+GET     /books/:id  Get details of a specific book by its ID.
+POST    /books      Add a new book (requires valid JSON body).
+PUT     /books/:id  Update an existing book's information.
+DELETE  /books/:id  Remove a book from the catalog.
+
+### Sample Request Body (POST/PUT):
+#### JSON
+
+{
+  "title": "One Hundred Years of Solitude",
+  "author": "Gabriel García Márquez",
+  "year": 1967,
+  "isbn": "9780307474478"
+}
+
+### 📂 Project Structure
+- src/main.ts: Application entry point and Swagger setup.
+- src/app.module.ts: Root module connecting database and features.
+- src/books/: Core logic (Controller, Service, Schema, and DTOs).
+- src/books/dto/: Validation rules for incoming data.
+
+
+
+Author Irene V. Sahun - GitHub: isahun 
+Created as part of the IT Academy Frontend BootCamp.
