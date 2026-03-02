@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config'; // Per gestionar variables d'entorn
-import { BooksModule } from './books/books.module'; // El crearem en el pas 3
+import { BooksModule } from './books/books.module';
 
 @Module({
   imports: [
