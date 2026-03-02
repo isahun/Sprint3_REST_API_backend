@@ -69,16 +69,16 @@ Once the server is running, explore and test the API directly from your browser:
 http://localhost:3000/api-docs
 
 ### Available Endpoints
-#### Method     Endpoint        Description
-GET             /books      Get all books in the database.
+#### Method ------- Endpoint ------- Description
+GET ------- /books ------- Get all books in the database.
 
-GET             /books/:id  Get details of a specific book by its ID.
+GET ------- /books/:id ------ Get details of a specific book by its ID.
 
-POST            /books      Add a new book (requires valid JSON body).
+POST ------- /books ------- Add a new book (requires valid JSON body).
 
-PUT             /books/:id  Update an existing book's information.
+PUT ------- /books/:id ------ Update an existing book's information.
 
-DELETE          /books/:id  Remove a book from the catalog.
+DELETE ------- /books/:id ------ Remove a book from the catalog.
 
 ### Sample Request Body (POST/PUT):
 #### JSON
