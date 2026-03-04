@@ -10,6 +10,8 @@ import {
   HttpStatus,
   UsePipes,
   ValidationPipe,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
@@ -21,7 +23,9 @@ import {
   ApiOperation,
   ApiParam,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport'; // Importa AuthGuard
 
 @ApiTags('Llibres') // Agrupa les endpoints a Swagger
 @Controller('books')
@@ -45,6 +49,8 @@ export class BooksController {
   }
 
   @Post()
+  @UseGuards(AuthGuard('jwt')) // Protegeix la ruta de creació
+  @ApiBearerAuth() // Indica a Swagger que aquesta ruta requereix un token Bearer
   @ApiOperation({ summary: 'Crea un nou llibre' })
   @ApiBody({ type: CreateBookDto, description: 'Dades del llibre a crear' })
   @ApiResponse({
@@ -67,6 +73,8 @@ export class BooksController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard('jwt')) // Protegeix la ruta d'actualització
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Actualitza un llibre existent' })
   @ApiParam({ name: 'id', description: 'ID del llibre', type: String })
   @ApiBody({
@@ -91,6 +99,8 @@ export class BooksController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt')) // Protegeix la ruta d'eliminació
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Elimina un llibre' })
   @ApiParam({ name: 'id', description: 'ID del llibre', type: String })
   @ApiResponse({ status: 204, description: 'Llibre eliminat correctament' })
