@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module'; // Per accedir a UsersService
 import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // Per accedir a variables d'entorn
 import { JwtStrategy } from './jwt.strategy';
 
@@ -14,12 +14,23 @@ import { JwtStrategy } from './jwt.strategy';
     JwtModule.registerAsync({
       // Configuració asíncrona per usar ConfigService
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRATION_TIME'),
-        },
-      }),
+      useFactory: (configService: ConfigService): JwtModuleOptions => {
+        const secret = configService.get<string>('JWT_SECRET');
+        const expiresIn = configService.get<string>('JWT_EXPIRATION_TIME');
+
+        if (!secret || !expiresIn) {
+          throw new Error(
+            'JWT_SECRET o JWT_EXPIRATION_TIME no definits al fitxer .env',
+          );
+        }
+
+        return {
+          secret,
+          signOptions: {
+            expiresIn: expiresIn as any, // "any" és la via ràpida i segura aquí per evitar el conflicte amb StringValue
+          },
+        };
+      },
       inject: [ConfigService],
     }),
   ],
