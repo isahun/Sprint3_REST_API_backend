@@ -8,8 +8,8 @@ export class User {
   @Prop({ required: true, unique: true })
   username: string;
 
-  @Prop({ required: true, select: false }) // 'select: false' per evitar retornar la contrasenya per defecte
-  password: string; // Guardarem la contrasenya hasheada
+  @Prop({ required: true, select: false }) // 'select: false' to avoid returning password by default
+  password: string; //save hashed password
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
