@@ -8,8 +8,8 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async findOne(username: string): Promise<User | null> {
-    return this.userModel.findOne({ username }).exec();
+  async findOne(username: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ username }).select('+password').exec(); //select password since field hidden by default for security reasons
   }
 
   async create(username: string, passwordPlain: string): Promise<User> {
