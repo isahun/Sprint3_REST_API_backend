@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module'; // Per accedir a UsersService
 import { PassportModule } from '@nestjs/passport';
-import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
+import { JwtModule, JwtModuleOptions, JwtSignOptions } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // Per accedir a variables d'entorn
 import { JwtStrategy } from './jwt.strategy';
 
@@ -27,7 +27,7 @@ import { JwtStrategy } from './jwt.strategy';
         return {
           secret,
           signOptions: {
-            expiresIn: expiresIn as any,
+            expiresIn: expiresIn as JwtSignOptions['expiresIn'],
           },
         };
       },
