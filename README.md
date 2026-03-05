@@ -73,15 +73,15 @@ http://localhost:3000/api-docs
 ## Available Endpoints  
 
 ### Method ------- Endpoint ------- Description  
-GET ---------- /books -------- Get all books in the database.
+GET -------------- /books --------- Get all books in the database.
 
-GET ---------- /books/:id ---- Get details of a specific book by its ID.
+GET ------------- /books/:id ------ Get details of a specific book by its ID.
 
-POST --------- /books -------- Add a new book (requires valid JSON body).
+POST ------------ /books ---------- Add a new book (requires valid JSON body).
 
-PUT ---------- /books/:id ---- Update an existing book's information.
+PUT ------------- /books/:id ------ Update an existing book's information.
 
-DELETE ------- /books/:id ---- Remove a book from the catalog.  
+DELETE ---------- /books/:id ------ Remove a book from the catalog.  
 
 
 ### Sample Request Body (POST/PUT):  
@@ -113,7 +113,7 @@ DELETE ------- /books/:id ---- Remove a book from the catalog.
 
 This repository is organized into branches to reflect the learning progress and feature implementation:
 
-#### [Branch: `authentication`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/authentication)(Latest)
+#### [Branch: `feature/authentication`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/authentication)(Latest)
 This branch contains the **full security implementation** (Sprint 3.07). 
 **Key additions over `main`:**
 - **JWT-based Authentication**: Secure login and registration.
@@ -122,7 +122,7 @@ This branch contains the **full security implementation** (Sprint 3.07).
 - **Enhanced Type Safety**: Refactored code to eliminate ESLint `any` warnings and ensure robust type definitions.
 - **Swagger Security**: Interactive documentation now includes "Authorize" functionality for Bearer Tokens.
 
-> **Note:** To test the most advanced version of this API with all security features active, please **switch to the `authentication` branch**.
+> **Note:** To test the most advanced version of this API with all security features active, please **switch to the `feature/authentication` branch**.
 
 ---
 
