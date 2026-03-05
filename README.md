@@ -54,7 +54,7 @@ The .env file is excluded from Git for security. You must create a new one in th
   - Create a file named .env.  
   - Add your MongoDB Atlas connection string:  
 
-    `MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/book-api`
+    `MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/book-api`  
     `PORT=3000`  
 
 ### 5. Launch the Server  
@@ -73,31 +73,31 @@ http://localhost:3000/api-docs
 ## Available Endpoints  
 
 ### Method ------- Endpoint ------- Description  
-GET ------- /books ------- Get all books in the database.
+GET ---------- /books -------- Get all books in the database.
 
-GET ----- /books/:id ------ Get details of a specific book by its ID.
+GET ---------- /books/:id ---- Get details of a specific book by its ID.
 
-POST ------- /books ------- Add a new book (requires valid JSON body).
+POST --------- /books -------- Add a new book (requires valid JSON body).
 
-PUT ----- /books/:id ------ Update an existing book's information.
+PUT ---------- /books/:id ---- Update an existing book's information.
 
-DELETE ----- /books/:id ------ Remove a book from the catalog.  
+DELETE ------- /books/:id ---- Remove a book from the catalog.  
 
 
 ### Sample Request Body (POST/PUT):  
 #### JSON
 
-{
+`{`
 
-  "title": "One Hundred Years of Solitude",
+  `"title": "One Hundred Years of Solitude",`
 
-  "author": "Gabriel García Márquez",
+  `"author": "Gabriel García Márquez",`
 
-  "year": 1967,
+  `"year": 1967,`
 
-  "isbn": "9780307474478"
+  `"isbn": "9780307474478"`
 
-}
+`}`
 
 ---
 
@@ -113,7 +113,7 @@ DELETE ----- /books/:id ------ Remove a book from the catalog.
 
 This repository is organized into branches to reflect the learning progress and feature implementation:
 
-### [Branch: `authentication`](https://github.com/isahun/book-api/tree/authentication) (Latest)
+#### [Branch: `authentication` (https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/authentication)](Latest)
 This branch contains the **full security implementation** (Sprint 3.07). 
 **Key additions over `main`:**
 - **JWT-based Authentication**: Secure login and registration.
