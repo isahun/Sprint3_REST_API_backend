@@ -24,7 +24,6 @@ import {
   ApiBody,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport'; // Importa AuthGuard
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard'; // Importa el guard de rols
 import { Roles } from '../auth/decorators/roles.decorator'; // Importa el decorador de rols
