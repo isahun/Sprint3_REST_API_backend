@@ -25,6 +25,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport'; // Importa AuthGuard
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Llibres') // Agrupa les endpoints a Swagger
 @Controller('books')
@@ -72,7 +73,7 @@ export class BooksController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard('jwt')) // Protegeix la ruta d'actualització
+  @UseGuards(JwtAuthGuard) // Protegeix la ruta d'actualització
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Actualitza un llibre existent' })
   @ApiParam({ name: 'id', description: 'ID del llibre', type: String })
@@ -98,7 +99,7 @@ export class BooksController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt')) // Protegeix la ruta d'eliminació
+  @UseGuards(JwtAuthGuard) // Protegeix la ruta d'eliminació
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Elimina un llibre' })
   @ApiParam({ name: 'id', description: 'ID del llibre', type: String })
