@@ -1,107 +1,74 @@
-# Books API – Authentication & Security Edition (Sprint 3.07)
+Vinga, Irene! Fem l'últim esforç abans que la birra arribi al 0%. 🍻
 
-Welcome to the evolved version of the **Books API**. Building upon the solid foundation of Sprint 3.06, this branch introduces a complete **Authentication and Security layer** using **Passport.js** and **JWT (JSON Web Tokens)**. 
+Aquí tens el README complet i professional per a la branca de feature/authorization-roles. He inclòs la secció de credencials de l'Admin que m'has passat i l'explicació de com funciona el sistema de rols perquè el professor no es perdi.
 
-The project now follows a strict modular architecture where access to sensitive operations is guarded by custom security strategies and type-safe implementations.
+Markdown
+# Books API – Role-Based Authorization (Sprint 3.08)
 
----
+This branch introduces **Role-Based Access Control (RBAC)** to the Books API. While the previous sprint focused on *Authentication* (who you are), this sprint focuses on *Authorization* (what you are allowed to do).
 
-## Key Features (Updated)
-
-- **Full CRUD Operations**: Manage a digital book catalog with ease.
-- **JWT Authentication**: Secure login system that issues 1-hour expiration tokens for authorized users.
-- **Protected Routes**: Critical endpoints (`POST`, `PATCH`, `DELETE`) are now guarded and require a valid **Bearer Token**.
-- **Custom Auth Guards**: Specialized `JwtAuthGuard` implementation to ensure clean, type-safe code and resolve ESLint warnings.
-- **Strict Data Validation**: Global `ValidationPipe` integrated with `class-validator` (including real ISBN verification).
-- **Interactive Documentation**: Auto-generated **Swagger** UI with full support for **Bearer Auth** testing.
-- **Environment Safety**: Sensitive data (MongoDB URI, JWT Secret) protected via `.env` configuration.
+We have implemented a dual-layer security system where users are assigned roles that determine their permissions within the library system.
 
 ---
 
-## Tech Stack
+## 🔐 Authorization Features
 
-- **Framework**: [NestJS](https://nestjs.com/) (Node.js)
-- **Language**: TypeScript
-- **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-- **Security**: [Passport.js](http://www.passportjs.org/) & [JWT](https://jwt.io/)
-- **ORM**: [Mongoose](https://mongoosejs.com/)
-- **API Docs**: Swagger / OpenAPI
-- **Validation**: class-validator & class-transformer
-
----
-
-## Installation & Getting Started
-
-### 1. Clone the repository
-
-git clone <your-repository-url>
-cd book-api
-
-### 2. Install dependencies
-
-npm install
-
-### 3. Set up Environment Variables  
-
-Create a file named .env in the root folder and add the following:
-
- `MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/book-api`  
- `PORT=3000`  
- `JWT_SECRET=your_super_secret_key_here`  
- `JWT_EXPIRATION_TIME=1h`  
-
-### 4. Launch the Server  
-  
-#Watch mode (recommended for development)   
-npm run start:dev
+- **Role-Based Access Control (RBAC)**: Users now have a `roles` property (stored as an array in MongoDB).
+- **Custom `@Roles` Decorator**: A metadata-driven approach to specify which roles are required for each API endpoint.
+- **RolesGuard**: A global-ready guard that intercepts requests, checks the user's roles against the route metadata, and grants or denies access.
+- **Route Protection**: 
+  - **Public/User Access**: `GET /books` and `GET /books/:id` remain accessible to everyone or authenticated users.
+  - **Admin Access Only**: `POST`, `PUT`, and `DELETE` operations are strictly restricted to users with the **ADMIN** role.
 
 ---
 
-## API Documentation (Swagger)  
-Once the server is running, explore and test the API directly from your browser:  
-URL: http://localhost:3000/api
+## 👥 Demo Credentials & Testing
 
-### How to test protected routes:  
+To test the different permission levels, you can use the following pre-configured account (if using the provided database) or register a new one:
 
-1. Register or Login via `/auth` endpoints to receive a JWT Token.
+### **Admin Account (Full Access)**
+- **Username:** `adminuser`
+- **Password:** `adminpass`
+- **Privileges:** Can Create, Update, and Delete books.
 
-2. Click the green "Authorize" button at the top of the Swagger page.
-
-3. Paste your token in the value field and click Authorize.
-
-4. Now you can access `POST`, `PATCH`, and `DELETE` methods (look for the closed lock icon 🔒).
-
----
-
-## Technical Decisions & Architecture
-This sprint focused on transforming the API into a production-grade service by applying advanced NestJS patterns:
-
-- Custom JwtAuthGuard: To avoid ESLint "unsafe-call" errors caused by using `AuthGuard('jwt')` directly as a decorator, we implemented a dedicated `JwtAuthGuard` class. This ensures the project is 100% compliant with strict linting rules.
-
-- Strong Typing (Type Safety): We eliminated unsafe `any` assignments in the `AuthModule` by explicitly using `JwtSignOptions` for the token expiration logic. This makes the codebase robust and easier to maintain.
-
-- Domain-Driven Modules: The logic is separated into three distinct "floors":
-
-    - AuthModule (The Lobby): Handles identification and token issuance.
-
-    - UsersModule (The Vault): Manages internal user data and credentials.
-
-    - BooksModule (The Library): Manages the book catalog, protected by security guards.
+### **Testing "403 Forbidden"**
+1. Register a new user via `/auth/register`. By default, all new users are assigned the `USER` role.
+2. Log in to get a JWT token.
+3. Try to `DELETE` a book via Swagger or Postman. You will receive a **403 Forbidden** response because a regular user lacks Admin permissions.
 
 ---
 
-## Project Structure
-src/auth/: JWT strategies, login logic, and custom security guards.
+## 🧠 Technical Implementation & "Pijeries"
 
-src/users/: User schema and service for database persistence.
-
-src/books/: Core book logic (Controller, Service, Schema).
-
-src/books/dto/: Validation rules (DTOs) for incoming book data.
-
-postman/: Exported JSON collection for quick API testing.
+- **Enum-based Roles**: We used a TypeScript `enum` for `UserRole` (ADMIN/USER) to avoid "magic strings" and ensure consistency across the app.
+- **Manual Admin Promotion**: For security reasons, there is no public "Register as Admin" endpoint. Promotion must be done manually via database administration (e.g., MongoDB Compass).
+- **Refined Guards**: The `RolesGuard` works in tandem with our `JwtAuthGuard`. It extracts the user object from the request (injected by Passport) and verifies the `roles` array.
+- **ESLint Compliance**: All decorators and guards have been written to avoid "unsafe-call" or "any" warnings, maintaining 100% type safety.
 
 ---
+
+## 🛠 How to Manually Promote a User to Admin  
+
+If you want to promote a standard user to Administrator:  
+1. Open **MongoDB Compass** and connect to your cluster.  
+2. Find the user document in the `users` collection.  
+3. Edit the `roles` array: change `["user"]` to `["admin"]`.  
+4. The user must log in again (or provide a new token) to reflect the changes in the `RolesGuard`.  
+
+---
+
+## 📂 Project Structure Changes
+    
+- `src/auth/decorators/roles.decorator.ts`: Custom metadata decorator.
+- `src/auth/guards/roles.guard.ts`: The authorization logic.
+- `src/users/schemas/user.schema.ts`: Updated with `roles` property and `UserRole` enum.
+- `src/books/books.controller.ts`: Secured with `@Roles(UserRole.ADMIN)`.
+
+---
+
+**Author**: Irene V. Sahun  
+**GitHub**: [isahun](https://github.com/isahun)  
+*Final Authorization Sprint - IT Academy.*
 
 ##### Author: Irene V. Sahun – GitHub: isahun
 ##### Created as part of the IT Academy Frontend bootcamp.
