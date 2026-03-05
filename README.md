@@ -38,7 +38,7 @@ To test the different permission levels, you can use the following pre-configure
 
 ---
 
-## 🧠 Technical Implementation & "Pijeries"
+## 🧠 Technical Implementation
 
 - **Enum-based Roles**: We used a TypeScript `enum` for `UserRole` (ADMIN/USER) to avoid "magic strings" and ensure consistency across the app.
 - **Manual Admin Promotion**: For security reasons, there is no public "Register as Admin" endpoint. Promotion must be done manually via database administration (e.g., MongoDB Compass).
