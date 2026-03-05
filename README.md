@@ -113,7 +113,7 @@ DELETE ------- /books/:id ---- Remove a book from the catalog.
 
 This repository is organized into branches to reflect the learning progress and feature implementation:
 
-#### [Branch: `authentication` (https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/authentication)](Latest)
+#### [Branch: `authentication`] (https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/authentication )(Latest)
 This branch contains the **full security implementation** (Sprint 3.07). 
 **Key additions over `main`:**
 - **JWT-based Authentication**: Secure login and registration.
