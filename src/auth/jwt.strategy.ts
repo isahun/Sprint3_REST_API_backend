@@ -18,13 +18,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: jwtSecret,
-    } as any);
+    });
   }
 
   // El mètode `validate` es crida un cop el token és decodificat i verificat
   async validate(payload: { username: string; sub: string }) {
-    console.log('--- JWT ESTRATÈGIA ---');
-    console.log('Payload rebut:', payload);
     // `payload` és l'objecte que vam signar en el login: { username, sub: _id }
     // Aquí pots fer una comprovació addicional, com buscar l'usuari a la BD
     const user = await this.usersService.findOne(payload.username);
