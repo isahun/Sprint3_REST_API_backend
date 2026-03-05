@@ -1,108 +1,107 @@
-# Books API – NestJS + MongoDB Atlas (Sprint 3.06)
+# Books API – Authentication & Security Edition (Sprint 3.07)
 
-Welcome to the **Books API**, a robust backend service designed to manage a digital book catalog. This project was built using **NestJS** and **Mongoose**, focusing on clean architecture, cloud database integration, and strict data validation.
+Welcome to the evolved version of the **Books API**. Building upon the solid foundation of Sprint 3.06, this branch introduces a complete **Authentication and Security layer** using **Passport.js** and **JWT (JSON Web Tokens)**. 
 
-
-
----
-
-## 🚀 Key Features
-
-- **Full CRUD Operations**: Create, Read, Update, and Delete books.
-- **Cloud Persistence**: Fully connected to **MongoDB Atlas**.
-- **Smart Validation**: Integrated `class-validator` to ensure data integrity (including real ISBN verification).
-- **Interactive Documentation**: Auto-generated **Swagger** UI for easy API testing.
-- **Conflict Handling**: Built-in detection for duplicate ISBNs (409 Conflict).
-- **Environment Safety**: Sensitive data protected via `.env` configuration.
+The project now follows a strict modular architecture where access to sensitive operations is guarded by custom security strategies and type-safe implementations.
 
 ---
 
-## 🛠 Tech Stack
+## Key Features (Updated)
+
+- **Full CRUD Operations**: Manage a digital book catalog with ease.
+- **JWT Authentication**: Secure login system that issues 1-hour expiration tokens for authorized users.
+- **Protected Routes**: Critical endpoints (`POST`, `PATCH`, `DELETE`) are now guarded and require a valid **Bearer Token**.
+- **Custom Auth Guards**: Specialized `JwtAuthGuard` implementation to ensure clean, type-safe code and resolve ESLint warnings.
+- **Strict Data Validation**: Global `ValidationPipe` integrated with `class-validator` (including real ISBN verification).
+- **Interactive Documentation**: Auto-generated **Swagger** UI with full support for **Bearer Auth** testing.
+- **Environment Safety**: Sensitive data (MongoDB URI, JWT Secret) protected via `.env` configuration.
+
+---
+
+## Tech Stack
 
 - **Framework**: [NestJS](https://nestjs.com/) (Node.js)
 - **Language**: TypeScript
 - **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+- **Security**: [Passport.js](http://www.passportjs.org/) & [JWT](https://jwt.io/)
 - **ORM**: [Mongoose](https://mongoosejs.com/)
 - **API Docs**: Swagger / OpenAPI
 - **Validation**: class-validator & class-transformer
 
 ---
 
-## 📦 Installation & Getting Started
-
-Follow these steps to get the project running on your local machine (Windows, macOS, or Linux).
+## Installation & Getting Started
 
 ### 1. Clone the repository
-Open your terminal and run:
 
 git clone <your-repository-url>
-
-### 2. Enter the project folder
-**Note on Ambiguity:** Depending on how you cloned the repo (e.g., via VS Code interface), you might already be inside the correct folder.
-
-**Check**: If you see the src folder and package.json in your sidebar, skip this step.
-
-Otherwise, run: 
-
 cd book-api
 
-### 3. Install dependencies
-This will download all necessary libraries (NestJS, Mongoose, etc.): 
+### 2. Install dependencies
 
 npm install
 
-### 4. Set up Environment Variables
-The .env file is excluded from Git for security. You must create a new one in the root folder:
-#### - Create a file named .env.
-#### - Add your MongoDB Atlas connection string: 
+### 3. Set up Environment Variables  
 
-MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/book-api
-PORT=3000
+Create a file named .env in the root folder and add the following:
 
-### 5. Launch the Server
-#Watch mode (recommended for development)
+ `MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/book-api`  
+ `PORT=3000`  
+ `JWT_SECRET=your_super_secret_key_here`  
+ `JWT_EXPIRATION_TIME=1h`  
 
+### 4. Launch the Server  
+  
+#Watch mode (recommended for development)   
 npm run start:dev
 
-### API Documentation (Swagger) 
-Once the server is running, explore and test the API directly from your browser: 
-http://localhost:3000/api-docs
+---
 
-### Available Endpoints
-#### Method ------- Endpoint ------- Description
-GET ------- /books ------- Get all books in the database.
+## API Documentation (Swagger)  
+Once the server is running, explore and test the API directly from your browser:  
+URL: http://localhost:3000/api
 
-GET ------- /books/:id ------ Get details of a specific book by its ID.
+### How to test protected routes:  
 
-POST ------- /books ------- Add a new book (requires valid JSON body).
+1. Register or Login via `/auth` endpoints to receive a JWT Token.
 
-PUT ------- /books/:id ------ Update an existing book's information.
+2. Click the green "Authorize" button at the top of the Swagger page.
 
-DELETE ------- /books/:id ------ Remove a book from the catalog.
+3. Paste your token in the value field and click Authorize.
 
-### Sample Request Body (POST/PUT):
-#### JSON
+4. Now you can access `POST`, `PATCH`, and `DELETE` methods (look for the closed lock icon 🔒).
 
-{
+---
 
-  "title": "One Hundred Years of Solitude",
+## Technical Decisions & Architecture
+This sprint focused on transforming the API into a production-grade service by applying advanced NestJS patterns:
 
-  "author": "Gabriel García Márquez",
+- Custom JwtAuthGuard: To avoid ESLint "unsafe-call" errors caused by using `AuthGuard('jwt')` directly as a decorator, we implemented a dedicated `JwtAuthGuard` class. This ensures the project is 100% compliant with strict linting rules.
 
-  "year": 1967,
+- Strong Typing (Type Safety): We eliminated unsafe `any` assignments in the `AuthModule` by explicitly using `JwtSignOptions` for the token expiration logic. This makes the codebase robust and easier to maintain.
 
-  "isbn": "9780307474478"
+- Domain-Driven Modules: The logic is separated into three distinct "floors":
 
-}
+    - AuthModule (The Lobby): Handles identification and token issuance.
 
-### 📂 Project Structure
-- src/main.ts: Application entry point and Swagger setup.
-- src/app.module.ts: Root module connecting database and features.
-- src/books/: Core logic (Controller, Service, Schema, and DTOs).
-- src/books/dto/: Validation rules for incoming data.
+    - UsersModule (The Vault): Manages internal user data and credentials.
 
+    - BooksModule (The Library): Manages the book catalog, protected by security guards.
 
+---
 
-Author Irene V. Sahun - GitHub: isahun 
+## Project Structure
+src/auth/: JWT strategies, login logic, and custom security guards.
 
-Created as part of the IT Academy Frontend BootCamp.
+src/users/: User schema and service for database persistence.
+
+src/books/: Core book logic (Controller, Service, Schema).
+
+src/books/dto/: Validation rules (DTOs) for incoming book data.
+
+postman/: Exported JSON collection for quick API testing.
+
+---
+
+##### Author: Irene V. Sahun – GitHub: isahun
+##### Created as part of the IT Academy Frontend bootcamp.
