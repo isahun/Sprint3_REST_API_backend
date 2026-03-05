@@ -17,9 +17,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: jwtSecret, // Explicitly type as string
-    });
+      secretOrKey: jwtSecret,
+    } as any);
   }
+
   // El mètode `validate` es crida un cop el token és decodificat i verificat
   async validate(payload: { username: string; sub: string }) {
     console.log('--- JWT ESTRATÈGIA ---');

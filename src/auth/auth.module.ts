@@ -27,7 +27,7 @@ import { JwtStrategy } from './jwt.strategy';
         return {
           secret,
           signOptions: {
-            expiresIn: expiresIn as any, // "any" és la via ràpida i segura aquí per evitar el conflicte amb StringValue
+            expiresIn: expiresIn as any,
           },
         };
       },
@@ -36,6 +36,6 @@ import { JwtStrategy } from './jwt.strategy';
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy], // Afegeix JwtStrategy com a proveïdor
-  exports: [AuthService], // Per si altres mòduls necessiten l'AuthService
+  exports: [AuthService, JwtStrategy, PassportModule], // Per si altres mòduls necessiten l'AuthService
 })
 export class AuthModule {}

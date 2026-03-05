@@ -13,9 +13,8 @@ import { AuthModule } from './auth/auth.module';
     MongooseModule.forRoot(
       process.env.MONGODB_URI || 'mongodb://localhost:27017/book-api',
     ),
-
-    BooksModule, // Importa el mòdul de llibres
     AuthModule,
+    BooksModule, // Importa el mòdul de llibres
     UsersModule,
   ],
   controllers: [],
