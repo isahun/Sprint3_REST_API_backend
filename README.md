@@ -1,4 +1,4 @@
-# Books API – Authentication & Security Edition (Sprint 3.07)
+# Books API – Authentication & Security Edition (Sprint 3.08)
 
 Welcome to the evolved version of the **Books API**. Building upon the solid foundation of Sprint 3.06, this branch introduces a complete **Authentication and Security layer** using **Passport.js** and **JWT (JSON Web Tokens)**. 
 
