@@ -1,6 +1,6 @@
-# Books API – Role-Based Authorization (Sprint 3.08)
+# Books API – Role-Based Authorization (Sprint 3.09)
 
-This branch introduces **Role-Based Access Control (RBAC)** to the Books API. While the previous sprint focused on *Authentication* (who you are), this sprint focuses on *Authorization* (what you are allowed to do).
+This branch introduces **Role-Based Access Control (RBAC)** to the Books API. While the previous sprint exercise focused on *Authentication* (who you are), this exercise focuses on *Authorization* (what you are allowed to do).
 
 We have implemented a dual-layer security system where users are assigned roles that determine their permissions within the library system.
 
