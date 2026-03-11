@@ -31,6 +31,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: Profile, //Passport Profile type ensures safety when accessing nested properties.
     done: VerifyCallback,
   ): void {
+    //void since no return value, calls done() function to end
     // Extract data from Google profile (name, emails, photos)
     // In real life scenario we'd find or create (if non existant) user in our DB using Google email
     const user = {
