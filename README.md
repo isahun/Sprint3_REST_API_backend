@@ -113,17 +113,31 @@ DELETE ---------- /books/:id ------ Remove a book from the catalog.
 
 This repository is organized into branches to reflect the learning progress and feature implementation:
 
-#### [Branch: `feature/authentication`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/authentication)(Latest)
+#### [Branch: `feature/authentication`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/authentication)
 This branch contains the **full security implementation** (Sprint 3.07). 
 **Key additions over `main`:**
 - **JWT-based Authentication**: Secure login and registration.
 - **Role-based Security**: Specialized `AuthGuards` to protect sensitive routes.
 - **Passport.js Integration**: Industry-standard authentication strategies.
 - **Enhanced Type Safety**: Refactored code to eliminate ESLint `any` warnings and ensure robust type definitions.
-- **Swagger Security**: Interactive documentation now includes "Authorize" functionality for Bearer Tokens.
+- **Swagger Security**: Interactive documentation now includes "Authorize" functionality for Bearer Tokens.  
 
-> **Note:** To test the most advanced version of this API with all security features active, please **switch to the `feature/authentication` branch**.
 
+### 🔹 [Branch: `feature/authorization-roles`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/authorization-roles)
+Evolution towards permission management (Sprint 3.08 - Part A).
+- **Role-based Access Control (RBAC)**: Implementation of `ADMIN` and `USER` roles in the user schema.
+- **Custom Decorators**: Creation of `@Roles()` to specify access levels per route.
+- **Authorization Guards**: Specialized `RolesGuard` to protect sensitive routes (Create, Update, Delete) from unauthorized users.
+
+### 🔹 [Branch: `feature/google-oauth`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/google-oauth) **(Latest)**
+External provider integration (Sprint 3.08 - Part B).
+- **OAuth 2.0 Integration**: Implementation of `GoogleStrategy`.
+- **Social Login**: Added routes for Google redirection and callback handling.
+- **Enhanced Profile Retrieval**: Safe extraction of name, email, and profile picture from Google profiles using TypeScript `Profile` types.
+
+---
+
+> **Note:** To test the most complete version of this API with all features combined, please **switch to the `feature/google-oauth` branch**.
 ---
 
 ##### Author Irene V. Sahun - GitHub: isahun 
