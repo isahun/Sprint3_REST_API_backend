@@ -123,13 +123,13 @@ This branch contains the **full security implementation** (Sprint 3.07).
 - **Swagger Security**: Interactive documentation now includes "Authorize" functionality for Bearer Tokens.  
 
 
-### 🔹 [Branch: `feature/authorization-roles`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/authorization-roles)
+#### [Branch: `feature/authorization-roles`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/authorization-roles)
 Evolution towards permission management (Sprint 3.08 - Part A).
 - **Role-based Access Control (RBAC)**: Implementation of `ADMIN` and `USER` roles in the user schema.
 - **Custom Decorators**: Creation of `@Roles()` to specify access levels per route.
 - **Authorization Guards**: Specialized `RolesGuard` to protect sensitive routes (Create, Update, Delete) from unauthorized users.
 
-### 🔹 [Branch: `feature/google-oauth`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/google-oauth) **(Latest)**
+#### [Branch: `feature/google-oauth`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/google-oauth) **(Latest)**
 External provider integration (Sprint 3.08 - Part B).
 - **OAuth 2.0 Integration**: Implementation of `GoogleStrategy`.
 - **Social Login**: Added routes for Google redirection and callback handling.
