@@ -1,4 +1,4 @@
-# Books API – NestJS + MongoDB Atlas (Sprint 3.06)
+# Books API – NestJS + MongoDB Atlas (Sprint 3.06 to 3.09)
 
 Welcome to the **Books API**, a robust backend service designed to manage a digital book catalog. This project was built using **NestJS** and **Mongoose**, focusing on clean architecture, cloud database integration, and strict data validation.
 
