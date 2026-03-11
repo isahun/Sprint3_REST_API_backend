@@ -1,7 +1,10 @@
 import {
   Controller,
+  Get,
   Post,
   Body,
+  Req,
+  UseGuards,
   HttpCode,
   HttpStatus,
   UsePipes,
@@ -10,6 +13,8 @@ import {
 import { AuthService } from './auth.service';
 import { RegisterUserDto, LoginUserDto } from './dto/auth.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { type Request } from 'express';
 
 @ApiTags('Autenticació') // Agrupa les rutes a Swagger
 @Controller('auth')
@@ -51,5 +56,27 @@ export class AuthController {
   )
   async login(@Body() loginDto: LoginUserDto) {
     return this.authService.login(loginDto);
+  }
+
+  //Route to initiate the Google OAuth flow.
+  //The AuthGuard('google') automatically redirects the user to Google's login page.
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {
+    // This route is handled by Passport; no additional code is needed here.
+    // We don't need the '_req' here because the Guard handles the redirection.
+    //Underscore is a convention for acknowledging unused variables that we want to keep in the code
+  }
+
+  //Callback route where Google redirects user after authentication
+  //Passport processes the data and attaches user profile to req.user
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  googleAuthRedirect(@Req() req: Request) {
+    // Return the user data received from Google (from our strategy's validate method)
+    return {
+      message: 'User authenticated via Google successfully',
+      user: req.user,
+    };
   }
 }
