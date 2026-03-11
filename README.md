@@ -1,66 +1,66 @@
-# Books API – Role-Based Authorization (Sprint 3.08)
+# Books API – OAuth 2.0 & Role-Based Authorization (Sprint 3.09)
 
-This branch introduces **Role-Based Access Control (RBAC)** to the Books API. While the previous sprint focused on *Authentication* (who you are), this sprint focuses on *Authorization* (what you are allowed to do).
-
-We have implemented a dual-layer security system where users are assigned roles that determine their permissions within the library system.
+This branch represents the final stage of the Security Sprint. It combines **Role-Based Access Control (RBAC)** with external identity providers using **OAuth 2.0 (Google)**. The goal is to provide a flexible and secure authentication system.
 
 ---
 
-## 🔐 Authorization Features
+## 🔐 Key Security Features
 
-- **Role-Based Access Control (RBAC)**: Users now have a `roles` property (stored as an array in MongoDB).
-- **Custom `@Roles` Decorator**: A metadata-driven approach to specify which roles are required for each API endpoint.
-- **RolesGuard**: A global-ready guard that intercepts requests, checks the user's roles against the route metadata, and grants or denies access.
-- **Route Protection**: 
-  - **Public/User Access**: `GET /books` and `GET /books/:id` remain accessible to everyone or authenticated users.
-  - **Admin Access Only**: `POST`, `PUT`, and `DELETE` operations are strictly restricted to users with the **ADMIN** role.
+### 1. External Authentication (OAuth 2.0)
+- **Google Integration**: Users can now sign in using their Google accounts via `passport-google-oauth20`.
+- **Google Strategy**: A custom strategy handles the redirection, validation, and safe extraction of user profiles.
+- **Data Safety**: Implemented with strict TypeScript types (`Profile`) to ensure safe access to Google's nested data (emails, photos, etc.).
+
+### 2. Role-Based Access Control (RBAC)
+- **Authorization Guards**: A specialized `RolesGuard` ensures that authenticated users can only access resources permitted by their assigned roles.
+- **Custom Decorators**: Using `@Roles()`, we declare required permissions directly on the controller endpoints.
+- **Hierarchical Access**: 
+  - **Public/User**: Browsing and viewing books.
+  - **Admin**: Exclusive rights to Create, Update, and Delete.
 
 ---
 
-## 👥 Demo Credentials & Testing
+## 🛠 Setup & Environment Variables
 
-To test the different permission levels, you can use the following pre-configured account (if using the provided database) or register a new one:
+To run the Google OAuth flow, you must configure the following variables in your `.env` file:
 
-### **Admin Account (Full Access)**
+```
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+```
+
+## 👥 Testing & Demo
+
+### **Option A: Google Login (Social)**
+1. Navigate to: `http://localhost:3000/auth/google`.
+2. Log in with your Google Account.
+3. Upon success, you will be redirected to the callback route, displaying your profile data as JSON.
+
+### **Option B: Local Admin Login (RBAC)**
 - **Username:** `adminuser`
 - **Password:** `adminpass`
-- **Privileges:** Can Create, Update, and Delete books.
-
-### **Testing "403 Forbidden"**
-1. Register a new user via `/auth/register`. By default, all new users are assigned the `USER` role.
-2. Log in to get a JWT token.
-3. Try to `DELETE` a book via Swagger or Postman. You will receive a **403 Forbidden** response because a regular user lacks Admin permissions.
+- **Privileges:** Use this token to test `POST`, `PUT`, and `DELETE` on `/books`.
 
 ---
 
 ## 🧠 Technical Implementation
 
-- **Enum-based Roles**: We used a TypeScript `enum` for `UserRole` (ADMIN/USER) to avoid "magic strings" and ensure consistency across the app.
-- **Manual Admin Promotion**: For security reasons, there is no public "Register as Admin" endpoint. Promotion must be done manually via database administration (e.g., MongoDB Compass).
-- **Refined Guards**: The `RolesGuard` works in tandem with our `JwtAuthGuard`. It extracts the user object from the request (injected by Passport) and verifies the `roles` array.
-- **ESLint Compliance**: All decorators and guards have been written to avoid "unsafe-call" or "any" warnings, maintaining 100% type safety.
-
----
-
-## 🛠 How to Manually Promote a User to Admin  
-
-If you want to promote a standard user to Administrator:  
-1. Open **MongoDB Compass** and connect to your cluster.  
-2. Find the user document in the `users` collection.  
-3. Edit the `roles` array: change `["user"]` to `["admin"]`.  
-4. The user must log in again (or provide a new token) to reflect the changes in the `RolesGuard`.  
+- **Type-Safe Strategy**: The `GoogleStrategy` is designed to avoid `any` types. It validates the existence of environment variables before initializing the `super()` call and uses the `Profile` interface for data extraction.
+- **Modular Security**: Authentication (Passport) and Authorization (Guards) work as independent layers. The `JwtAuthGuard` identifies the user, and the `RolesGuard` decides their fate.
+- **Fail-Safe Mechanism**: Implemented **Optional Chaining** (`?.`) when accessing external profile data to prevent server crashes if certain Google fields are missing.
 
 ---
 
 ## 📂 Project Structure Changes
-    
-- `src/auth/decorators/roles.decorator.ts`: Custom metadata decorator.
-- `src/auth/guards/roles.guard.ts`: The authorization logic.
-- `src/users/schemas/user.schema.ts`: Updated with `roles` property and `UserRole` enum.
-- `src/books/books.controller.ts`: Secured with `@Roles(UserRole.ADMIN)`.
+
+- `src/auth/google.strategy.ts`: Logic for Google OAuth authentication and profile extraction.
+- `src/auth/guards/roles.guard.ts`: Interceptor that validates user roles for protected routes.
+- `src/auth/decorators/roles.decorator.ts`: Metadata decorator for route authorization.
+- `src/auth/auth.controller.ts`: Added `/auth/google` and `/auth/google/callback` endpoints.
+- `src/users/schemas/user.schema.ts`: Expanded to support the `roles` property and `UserRole` enum.
 
 ---
 
 **Author**: Irene V. Sahun  
 **GitHub**: [isahun](https://github.com/isahun)  
-*Sprint 3 - Authorization - Frontend Bootcamp - IT Academy.*
+*Sprint 3 - Advanced Security & OAuth - IT Academy.*
