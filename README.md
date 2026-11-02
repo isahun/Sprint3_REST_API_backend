@@ -40,10 +40,6 @@ git clone <https://github.com/isahun/Sprint3_REST_API_backend.git>
 
 **Check**: If you see the src folder and package.json in your sidebar, skip this step.
 
-Otherwise, run: 
-
-cd book-api
-
 ### 3. Install dependencies
 This will download all necessary libraries (NestJS, Mongoose, etc.): 
 
