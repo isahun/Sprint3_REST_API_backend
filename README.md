@@ -33,7 +33,7 @@ Follow these steps to get the project running on your local machine (Windows, ma
 ### 1. Clone the repository  
 Open your terminal and run:
 
-git clone <your-repository-url>
+git clone <https://github.com/isahun/Sprint3_REST_API_backend.git>
 
 ### 2. Enter the project folder  
 **Note on Ambiguity:** Depending on how you cloned the repo (e.g., via VS Code interface), you might already be inside the correct folder.
