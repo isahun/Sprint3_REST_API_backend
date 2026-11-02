@@ -1,8 +1,3 @@
-Vinga, Irene! Fem l'últim esforç abans que la birra arribi al 0%. 🍻
-
-Aquí tens el README complet i professional per a la branca de feature/authorization-roles. He inclòs la secció de credencials de l'Admin que m'has passat i l'explicació de com funciona el sistema de rols perquè el professor no es perdi.
-
-Markdown
 # Books API – Role-Based Authorization (Sprint 3.08)
 
 This branch introduces **Role-Based Access Control (RBAC)** to the Books API. While the previous sprint focused on *Authentication* (who you are), this sprint focuses on *Authorization* (what you are allowed to do).
