@@ -1,17 +1,26 @@
-// src/books/schemas/book.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export type BookDocument = Book & Document;
 
-@Schema({ timestamps: true }) // Habilitem timestamps per createdAt i updatedAt
+@Schema({ timestamps: true })
 export class Book {
-  @Prop({ required: true, trim: true })
-  title: string;
+  @ApiProperty({
+    example: '672a1b2c3d4e5f6789012345',
+    description: 'Identificador únic del llibre a MongoDB',
+  })
+  _id!: string;
 
+  @ApiProperty({ example: 'La metamorfosi', description: 'Títol del llibre' })
   @Prop({ required: true, trim: true })
-  author: string;
+  title!: string;
 
+  @ApiProperty({ example: 'Franz Kafka', description: 'Autor del llibre' })
+  @Prop({ required: true, trim: true })
+  author!: string;
+
+  @ApiPropertyOptional({ example: 1915, description: 'Any de publicació' })
   @Prop({
     type: Number,
     min: [1000, "L'any ha de ser superior a 1000"],
@@ -19,6 +28,10 @@ export class Book {
   })
   year?: number;
 
+  @ApiPropertyOptional({
+    example: '9788420674205',
+    description: 'ISBN del llibre',
+  })
   @Prop({
     unique: true,
     validate: {
