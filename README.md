@@ -1,141 +1,66 @@
-# Books API – NestJS + MongoDB Atlas (Sprint 3.06 to 3.09)
+# Books API – OAuth 2.0 & Role-Based Authorization (Sprint 3.09)
 
-Welcome to the **Books API**, a robust backend service designed to manage a digital book catalog. This project was built using **NestJS** and **Mongoose**, focusing on clean architecture, cloud database integration, and strict data validation.
-
----
-
-## Key Features
-
-- **Full CRUD Operations**: Create, Read, Update, and Delete books.
-- **Cloud Persistence**: Fully connected to **MongoDB Atlas**.
-- **Smart Validation**: Integrated `class-validator` to ensure data integrity (including real ISBN verification).
-- **Interactive Documentation**: Auto-generated **Swagger** UI for easy API testing.
-- **Conflict Handling**: Built-in detection for duplicate ISBNs (409 Conflict).
-- **Environment Safety**: Sensitive data protected via `.env` configuration.
+This branch represents the final stage of the Security Sprint. It combines **Role-Based Access Control (RBAC)** with external identity providers using **OAuth 2.0 (Google)**. The goal is to provide a flexible and secure authentication system.
 
 ---
 
-## Tech Stack
+## 🔐 Key Security Features
 
-- **Framework**: [NestJS](https://nestjs.com/) (Node.js)
-- **Language**: TypeScript
-- **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-- **ORM**: [Mongoose](https://mongoosejs.com/)
-- **API Docs**: Swagger / OpenAPI
-- **Validation**: class-validator & class-transformer
+### 1. External Authentication (OAuth 2.0)
+- **Google Integration**: Users can now sign in using their Google accounts via `passport-google-oauth20`.
+- **Google Strategy**: A custom strategy handles the redirection, validation, and safe extraction of user profiles.
+- **Data Safety**: Implemented with strict TypeScript types (`Profile`) to ensure safe access to Google's nested data (emails, photos, etc.).
 
----
-
-## Installation & Getting Started
-
-Follow these steps to get the project running on your local machine (Windows, macOS, or Linux).
-
-### 1. Clone the repository  
-Open your terminal and run:
-
-git clone <https://github.com/isahun/Sprint3_REST_API_backend.git>
-
-### 2. Enter the project folder  
-**Note on Ambiguity:** Depending on how you cloned the repo (e.g., via VS Code interface), you might already be inside the correct folder.
-
-**Check**: If you see the src folder and package.json in your sidebar, skip this step.
-
-### 3. Install dependencies
-This will download all necessary libraries (NestJS, Mongoose, etc.): 
-
-npm install
-
-### 4. Set up Environment Variables
-The .env file is excluded from Git for security. You must create a new one in the root folder:  
-  - Create a file named .env.  
-  - Add your MongoDB Atlas connection string:  
-
-    `MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/book-api`  
-    `PORT=3000`  
-
-### 5. Launch the Server  
-#Watch mode (recommended for development)  
-
-npm run start:dev
+### 2. Role-Based Access Control (RBAC)
+- **Authorization Guards**: A specialized `RolesGuard` ensures that authenticated users can only access resources permitted by their assigned roles.
+- **Custom Decorators**: Using `@Roles()`, we declare required permissions directly on the controller endpoints.
+- **Hierarchical Access**: 
+  - **Public/User**: Browsing and viewing books.
+  - **Admin**: Exclusive rights to Create, Update, and Delete.
 
 ---
 
-## API Documentation (Swagger)  
-Once the server is running, explore and test the API directly from your browser: 
-http://localhost:3000/api-docs
+## 🛠 Setup & Environment Variables
+
+To run the Google OAuth flow, you must configure the following variables in your `.env` file:
+
+```
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+```
+
+## 👥 Testing & Demo
+
+### **Option A: Google Login (Social)**
+1. Navigate to: `http://localhost:3000/auth/google`.
+2. Log in with your Google Account.
+3. Upon success, you will be redirected to the callback route, displaying your profile data as JSON.
+
+### **Option B: Local Admin Login (RBAC)**
+- **Username:** `adminuser`
+- **Password:** `adminpass`
+- **Privileges:** Use this token to test `POST`, `PUT`, and `DELETE` on `/books`.
 
 ---
 
-## Available Endpoints  
+## 🧠 Technical Implementation
 
-### Method ------- Endpoint ------- Description  
-GET -------------- /books --------- Get all books in the database.
-
-GET ------------- /books/:id ------ Get details of a specific book by its ID.
-
-POST ------------ /books ---------- Add a new book (requires valid JSON body).
-
-PUT ------------- /books/:id ------ Update an existing book's information.
-
-DELETE ---------- /books/:id ------ Remove a book from the catalog.  
-
-
-### Sample Request Body (POST/PUT):  
-#### JSON
-
-`{`
-
-  `"title": "One Hundred Years of Solitude",`
-
-  `"author": "Gabriel García Márquez",`
-
-  `"year": 1967,`
-
-  `"isbn": "9780307474478"`
-
-`}`
+- **Type-Safe Strategy**: The `GoogleStrategy` is designed to avoid `any` types. It validates the existence of environment variables before initializing the `super()` call and uses the `Profile` interface for data extraction.
+- **Modular Security**: Authentication (Passport) and Authorization (Guards) work as independent layers. The `JwtAuthGuard` identifies the user, and the `RolesGuard` decides their fate.
+- **Fail-Safe Mechanism**: Implemented **Optional Chaining** (`?.`) when accessing external profile data to prevent server crashes if certain Google fields are missing.
 
 ---
 
-## Project Structure
-- src/main.ts: Application entry point and Swagger setup.
-- src/app.module.ts: Root module connecting database and features.
-- src/books/: Core logic (Controller, Service, Schema, and DTOs).
-- src/books/dto/: Validation rules for incoming data.
+## 📂 Project Structure Changes
+
+- `src/auth/google.strategy.ts`: Logic for Google OAuth authentication and profile extraction.
+- `src/auth/guards/roles.guard.ts`: Interceptor that validates user roles for protected routes.
+- `src/auth/decorators/roles.decorator.ts`: Metadata decorator for route authorization.
+- `src/auth/auth.controller.ts`: Added `/auth/google` and `/auth/google/callback` endpoints.
+- `src/users/schemas/user.schema.ts`: Expanded to support the `roles` property and `UserRole` enum.
 
 ---
 
-## Project Evolution & Branches
-
-This repository is organized into branches to reflect the learning progress and feature implementation:
-
-#### [Branch: `feature/authentication`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/authentication)
-This branch contains the **full security implementation** (Sprint 3.07). 
-**Key additions over `main`:**
-- **JWT-based Authentication**: Secure login and registration.
-- **Role-based Security**: Specialized `AuthGuards` to protect sensitive routes.
-- **Passport.js Integration**: Industry-standard authentication strategies.
-- **Enhanced Type Safety**: Refactored code to eliminate ESLint `any` warnings and ensure robust type definitions.
-- **Swagger Security**: Interactive documentation now includes "Authorize" functionality for Bearer Tokens.  
-
-
-#### [Branch: `feature/authorization-roles`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/authorization-roles)
-Evolution towards permission management (Sprint 3.08 - Part A).
-- **Role-based Access Control (RBAC)**: Implementation of `ADMIN` and `USER` roles in the user schema.
-- **Custom Decorators**: Creation of `@Roles()` to specify access levels per route.
-- **Authorization Guards**: Specialized `RolesGuard` to protect sensitive routes (Create, Update, Delete) from unauthorized users.
-
-#### [Branch: `feature/google-oauth`](https://github.com/isahun/Sprint3_REST_API_backend/tree/feature/google-oauth) **(Latest)**
-External provider integration (Sprint 3.08 - Part B).
-- **OAuth 2.0 Integration**: Implementation of `GoogleStrategy`.
-- **Social Login**: Added routes for Google redirection and callback handling.
-- **Enhanced Profile Retrieval**: Safe extraction of name, email, and profile picture from Google profiles using TypeScript `Profile` types.
-
----
-
-> **Note:** To test the most complete version of this API with all features combined, please **switch to the `feature/google-oauth` branch**.
----
-
-##### Author Irene V. Sahun - GitHub: isahun 
-
-##### Created as part of the IT Academy Frontend BootCamp.
+**Author**: Irene V. Sahun  
+**GitHub**: [isahun](https://github.com/isahun)  
+*Sprint 3 - Advanced Security & OAuth - IT Academy.*

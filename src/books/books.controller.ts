@@ -10,6 +10,7 @@ import {
   HttpStatus,
   UsePipes,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
@@ -21,10 +22,17 @@ import {
   ApiOperation,
   ApiParam,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard'; // Importa el guard de rols
+import { Roles } from '../auth/decorators/roles.decorator'; // Importa el decorador de rols
+import { UserRole } from '../users/schemas/user.schema'; // Importa els rols d'usuari
 
 @ApiTags('Llibres') // Agrupa les endpoints a Swagger
 @Controller('books')
+// Es pot aplicar UseGuards a nivell de controlador si tots els mètodes el necessiten.
+// En aquest cas, ho fem per mètode per diferenciar permisos de lectura/escriptura.
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
@@ -45,6 +53,9 @@ export class BooksController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard) // Protegeix la ruta de creació
+  @Roles(UserRole.ADMIN) //només admins poden crear
+  @ApiBearerAuth() // Indica a Swagger que aquesta ruta requereix un token Bearer
   @ApiOperation({ summary: 'Crea un nou llibre' })
   @ApiBody({ type: CreateBookDto, description: 'Dades del llibre a crear' })
   @ApiResponse({
@@ -53,6 +64,8 @@ export class BooksController {
     type: Book,
   })
   @ApiResponse({ status: 400, description: 'Dades invàlides' })
+  @ApiResponse({ status: 401, description: 'No autenticat' })
+  @ApiResponse({ status: 403, description: 'No autoritzat (falten permisos)' })
   @ApiResponse({ status: 409, description: "L'ISBN ja existeix" }) // Per a ConflictException
   @HttpCode(HttpStatus.CREATED) // Retorna 201 Created
   @UsePipes(
@@ -67,6 +80,9 @@ export class BooksController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard) // Protegeix la ruta d'actualització
+  @Roles(UserRole.ADMIN) //només admins poden actualitzar
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Actualitza un llibre existent' })
   @ApiParam({ name: 'id', description: 'ID del llibre', type: String })
   @ApiBody({
@@ -75,6 +91,8 @@ export class BooksController {
   })
   @ApiResponse({ status: 200, description: 'Llibre actualitzat', type: Book })
   @ApiResponse({ status: 400, description: 'Dades invàlides' })
+  @ApiResponse({ status: 401, description: 'No autenticat' })
+  @ApiResponse({ status: 403, description: 'No autoritzat (falten permisos)' })
   @ApiResponse({ status: 404, description: 'Llibre no trobat' })
   @UsePipes(
     new ValidationPipe({
@@ -91,9 +109,14 @@ export class BooksController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard) // Protegeix la ruta d'eliminació
+  @Roles(UserRole.ADMIN) //només admins poden eliminar
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Elimina un llibre' })
   @ApiParam({ name: 'id', description: 'ID del llibre', type: String })
   @ApiResponse({ status: 204, description: 'Llibre eliminat correctament' })
+  @ApiResponse({ status: 401, description: 'No autenticat' })
+  @ApiResponse({ status: 403, description: 'No autoritzat (falten permisos)' })
   @ApiResponse({ status: 404, description: 'Llibre no trobat' })
   @HttpCode(HttpStatus.NO_CONTENT) // Retorna 204 No Content per a DELETE reeixit
   async remove(@Param('id') id: string): Promise<void> {
