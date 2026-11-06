@@ -28,7 +28,14 @@ async function bootstrap() {
     .addTag('Autenticació', "Gestió de registre i login d'usuaris")
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document); // La documentació estarà disponible a /api-docs
+  SwaggerModule.setup('api-docs', app, document, {
+    customCssUrl:
+      'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css',
+    customJs: [
+      'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js',
+      'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-standalone-preset.js',
+    ],
+  });
 
   const PORT = process.env.PORT || 3000;
   await app.listen(PORT, () => {
