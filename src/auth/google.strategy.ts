@@ -1,5 +1,6 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback, Profile } from 'passport-google-oauth20';
+import { Strategy } from 'passport-google-oauth20';
+import type { Profile } from 'passport-google-oauth20';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -25,22 +26,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   }
 
   // Function triggered after Google successfully authenticates the user.
-  validate(
-    accessToken: string,
-    refreshToken: string,
-    profile: Profile, //Passport Profile type ensures safety when accessing nested properties.
-    done: VerifyCallback,
-  ): void {
-    //void since no return value, calls done() function to end
-    // Extract data from Google profile (name, emails, photos)
-    // In real life scenario we'd find or create (if non existant) user in our DB using Google email
+  validate(accessToken: string, refreshToken: string, profile: Profile) {
     const user = {
-      email: profile.emails?.[0]?.value, //use conditional with "?", IF email exists, take the one at position 0
-      firstName: profile.name?.givenName,
-      lastName: profile.name?.familyName,
-      picture: profile.photos?.[0].value,
-      accessToken, // Token required if you need to interact with Google APIs on behalf of the user
+      googleId: profile.id,
+      email: profile.emails?.[0]?.value,
     };
-    done(null, user); //The returned user object is attached to the request: req.user
+
+    return user;
   }
 }

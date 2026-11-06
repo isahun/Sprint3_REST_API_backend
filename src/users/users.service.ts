@@ -9,16 +9,42 @@ export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async findOne(username: string): Promise<UserDocument | null> {
-    return this.userModel.findOne({ username }).select('+password').exec(); //select password since field hidden by default for security reasons
+    return this.userModel.findOne({ username }).exec();
+  }
+
+  async findOneWithPassword(username: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ username }).select('+password').exec();
+  }
+
+  async findByGoogleId(googleId: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ googleId }).exec();
   }
 
   async create(username: string, passwordPlain: string): Promise<User> {
     const existingUser = await this.userModel.findOne({ username }).exec();
+
     if (existingUser) {
       throw new ConflictException("Aquest nom d'usuari ja existeix.");
     }
-    const hashedPassword = await bcrypt.hash(passwordPlain, 10); // 10 jump rounds
-    const newUser = new this.userModel({ username, password: hashedPassword });
+
+    const hashedPassword = await bcrypt.hash(passwordPlain, 10);
+    const newUser = new this.userModel({
+      username,
+      password: hashedPassword,
+    });
+
+    return newUser.save();
+  }
+
+  async createGoogleUser(userData: {
+    googleId: string;
+    email: string;
+  }): Promise<UserDocument> {
+    const newUser = new this.userModel({
+      googleId: userData.googleId,
+      email: userData.email,
+    });
+
     return newUser.save();
   }
 
@@ -27,5 +53,9 @@ export class UsersService {
     hashedPasswordFromDb: string,
   ): Promise<boolean> {
     return bcrypt.compare(passwordPlain, hashedPasswordFromDb);
+  }
+
+  async findById(id: string): Promise<UserDocument | null> {
+    return this.userModel.findById(id).exec();
   }
 }

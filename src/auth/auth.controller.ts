@@ -72,11 +72,12 @@ export class AuthController {
   //Passport processes the data and attaches user profile to req.user
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  googleAuthRedirect(@Req() req: Request) {
-    // Return the user data received from Google (from our strategy's validate method)
-    return {
-      message: 'User authenticated via Google successfully',
-      user: req.user,
-    };
+  async googleAuthRedirect(@Req() req: Request) {
+    return this.authService.googleLogin(
+      req.user as {
+        googleId: string;
+        email: string;
+      },
+    );
   }
 }

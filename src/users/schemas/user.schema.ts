@@ -10,11 +10,17 @@ export enum UserRole {
 
 @Schema()
 export class User {
-  @Prop({ required: true, unique: true })
-  username: string;
+  @Prop({ unique: true, sparse: true })
+  username?: string;
 
-  @Prop({ required: true, select: false }) // 'select: false' to avoid returning password by default
-  password: string; //save hashed password
+  @Prop({ select: false })
+  password?: string;
+
+  @Prop({ unique: true, sparse: true })
+  email?: string;
+
+  @Prop({ unique: true, sparse: true })
+  googleId?: string;
 
   @Prop({ type: [String], enum: UserRole, default: [UserRole.USER] })
   roles: UserRole[];

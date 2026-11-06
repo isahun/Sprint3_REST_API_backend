@@ -17,8 +17,8 @@ export class AuthService {
   }
 
   async login(loginDto: LoginUserDto): Promise<{ access_token: string }> {
-    const user = await this.usersService.findOne(loginDto.username);
-    if (!user) {
+    const user = await this.usersService.findOneWithPassword(loginDto.username);
+    if (!user || !user.password) {
       throw new UnauthorizedException('Credencials invàlides');
     }
 
@@ -35,6 +35,26 @@ export class AuthService {
 
     // El payload del JWT hauria de ser lleuger i no contenir informació sensible
     const payload = { username: user.username, sub: String(user._id) };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
+  }
+
+  async googleLogin(googleUser: {
+    googleId: string;
+    email: string;
+  }): Promise<{ access_token: string }> {
+    let user = await this.usersService.findByGoogleId(googleUser.googleId);
+
+    if (!user) {
+      user = await this.usersService.createGoogleUser(googleUser);
+    }
+
+    const payload = {
+      username: user.username ?? user.email,
+      sub: String(user._id),
+    };
+
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
