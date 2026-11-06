@@ -10,6 +10,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     // 1. Get values separately to validate and satisfy TypeScript type safety
     const clientID = configService.get<string>('GOOGLE_CLIENT_ID');
     const clientSecret = configService.get<string>('GOOGLE_CLIENT_SECRET');
+    const callbackURL =
+      configService.get<string>('GOOGLE_CALLBACK_URL') ??
+      'http://localhost:3000/auth/google/callback';
 
     // 2. Throw error if credentials are missing to ensure they are not undefined
     if (!clientID || !clientSecret) {
@@ -20,7 +23,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       //at this point TS knows what to do with all these
       clientID,
       clientSecret,
-      callbackURL: 'http://localhost:3000/auth/google/callback', //The URL where Google redirects after login
+      callbackURL, //The URL where Google redirects after login
       scope: ['email', 'profile'], //Requested permissions from user
     });
   }
